@@ -17,3 +17,5 @@ services:
       - db
     ports:
       - '8081:8080'
+volumes:
+  db_data:
