@@ -5,13 +5,13 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# штука чтобы Python находил src/
+#чтобы Python находил src/
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
 from src.core.database import Base
 from src.settings import settings
 
-# импорт моделей для metadata
+#импорт моделей для metadata
 from src.models.models import User, Project, BoardColumn, Task, TaskLog
 
 #объект конфигурации алембик
