@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from typing import Optional
-from schemas.example import ExampleSchema
+from schemas.user import ExampleSchema
 
 router = APIRouter()
 

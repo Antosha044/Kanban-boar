@@ -27,7 +27,7 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
-
+#функции для управления миграциями
 def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")
     context.configure(

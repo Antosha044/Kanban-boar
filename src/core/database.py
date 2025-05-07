@@ -10,6 +10,7 @@ engine = create_async_engine(
     #pool_size = 5
     #max_overflow = 10
 )
+#фабрика сессий
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
