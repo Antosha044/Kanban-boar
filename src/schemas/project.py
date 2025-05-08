@@ -26,3 +26,4 @@ class ProjectOut(ProjectBase):
 
     class Config:
         from_attributes = True
+
