@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
     DB_PORT: int
+    SECRET_KEY: str
 
     @property
     def DATABASE_URL_asyncpg(self):

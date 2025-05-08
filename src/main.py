@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from settings import settings
 from routers import router
 
+from src.routers import auth_router
 
 app = FastAPI(debug=settings.SERVER_TEST)
 app.include_router(router)
@@ -16,3 +17,5 @@ if __name__ == "__main__":
         port=settings.SERVER_PORT,
         log_level="debug" if settings.SERVER_TEST else "info",
     )
+
+app.include_router(auth_router.router, prefix="/auth", tags=["auth"])

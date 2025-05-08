@@ -1,5 +1,4 @@
-# Здесь будут располагаться система подключения и инициализации базы данных,
-# авторизация и т.д.
+# Здесь будут располагаться система подключения и инициализации базы данных
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 from src.settings import settings
