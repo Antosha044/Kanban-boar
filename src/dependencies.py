@@ -9,7 +9,7 @@ from src.core.database import get_db
 from src.models.models import User
 from src.crud.user import get_user_by_id
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
