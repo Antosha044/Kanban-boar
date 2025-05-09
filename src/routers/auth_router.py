@@ -1,8 +1,13 @@
-from fastapi import APIRouter, HTTPException
-from src.schemas.auth import UserRegister, Token
+from fastapi import Depends, HTTPException, status, APIRouter
+
+from src.schemas.auth import UserRegister, Token, UserLogin
 from src.core.jwt_utils import create_access_token
 from src.core.database import AsyncSessionLocal
 from src.models.models import User
+from src.core.database import get_db
+from src.crud.user import get_user_by_email
+
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from passlib.context import CryptContext
 import uuid
@@ -37,3 +42,18 @@ async def register_user(user_data: UserRegister):
         access_token = create_access_token(data={"sub": str(new_user.id)})
 
         return Token(access_token=access_token)
+
+@router.post("/login", response_model=Token)
+async def login_user(
+    login_data: UserLogin,
+    session: AsyncSession = Depends(get_db)
+):
+    user = await get_user_by_email(session, login_data.email)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+
+    if not pwd_context.verify(login_data.password, user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+
+    access_token = create_access_token(data={"sub": str(user.id)})
+    return Token(access_token=access_token)

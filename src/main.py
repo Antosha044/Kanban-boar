@@ -1,21 +1,17 @@
 import uvicorn
 from fastapi import FastAPI
 
-from settings import settings
-from routers import router
-
-from src.routers import auth_router
+from src.settings import settings
+from src.routers import router 
 
 app = FastAPI(debug=settings.SERVER_TEST)
 app.include_router(router)
 
-
 if __name__ == "__main__":
     uvicorn.run(
-        app,
+        "src.main:app", 
         host=settings.SERVER_ADDR,
         port=settings.SERVER_PORT,
         log_level="debug" if settings.SERVER_TEST else "info",
+        reload=True  
     )
-
-app.include_router(auth_router.router, prefix="/auth", tags=["auth"])
