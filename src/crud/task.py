@@ -1,6 +1,8 @@
 from uuid import uuid4, UUID
 from datetime import datetime
 
+from sqlalchemy.orm import selectinload
+
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,9 +21,8 @@ async def create_task(session: AsyncSession, task_data: TaskCreate) -> Task:
         create_time=datetime.utcnow(),
         last_update=datetime.utcnow()
     )
-
     session.add(new_task)
-    await session.flush()
+    await session.flush() 
 
     log = TaskLog(
         id=uuid4(),
@@ -32,17 +33,52 @@ async def create_task(session: AsyncSession, task_data: TaskCreate) -> Task:
     session.add(log)
 
     await session.commit()
-    await session.refresh(new_task)
-    return new_task
-
+    result = await session.execute(
+        select(Task)
+        .where(Task.id == new_task.id)
+        .options(
+            selectinload(Task.users),
+            selectinload(Task.logs),
+            selectinload(Task.column)
+        )
+    )
+    return result.scalar_one()
 
 async def get_task_by_id(session: AsyncSession, task_id: UUID) -> Task | None:
-    result = await session.execute(select(Task).where(Task.id == task_id))
+    result = await session.execute(
+        select(Task)
+        .where(Task.id == task_id)
+        .options(
+            selectinload(Task.users), 
+            selectinload(Task.logs),   
+            selectinload(Task.column)  
+        )
+    )
     return result.scalar_one_or_none()
 
+async def get_tasks_by_column(
+    session: AsyncSession,
+    column_id: UUID,
+    name_contains: Optional[str] = None,
+    user_id: Optional[UUID] = None
+) -> list[Task]:
+    query = (
+        select(Task)
+        .where(Task.column_id == column_id)
+        .options(
+            selectinload(Task.users),
+            selectinload(Task.logs),
+            selectinload(Task.column)
+        )
+    )
 
-async def get_tasks_by_column(session: AsyncSession, column_id: UUID) -> list[Task]:
-    result = await session.execute(select(Task).where(Task.column_id == column_id))
+    if name_contains:
+        query = query.where(func.lower(Task.name).contains(name_contains.lower()))
+
+    if user_id:
+        query = query.join(tasks_users).where(tasks_users.c.user_id == user_id)
+
+    result = await session.execute(query)
     return result.scalars().all()
 
 
@@ -105,24 +141,6 @@ async def get_task_logs(session: AsyncSession, task_id: UUID) -> list[TaskLog]:
     return result.scalars().all()
 
 
-async def get_tasks_by_column_filtered(
-    session: AsyncSession,
-    column_id: UUID,
-    name_contains: Optional[str] = None,
-    user_id: Optional[UUID] = None
-) -> list[Task]:
-    query = select(Task).where(Task.column_id == column_id)
-
-    #фильтрация по части названия
-    if name_contains:
-        query = query.where(func.lower(Task.name).contains(name_contains.lower()))
-
-    #фильтр по user_id
-    if user_id:
-        query = query.join(tasks_users).where(tasks_users.c.user_id == user_id)
-
-    result = await session.execute(query)
-    return result.scalars().all()
 
 
 async def get_users_by_task(session: AsyncSession, task_id: UUID) -> list[User]:

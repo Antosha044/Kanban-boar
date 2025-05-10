@@ -50,7 +50,7 @@ class BoardColumn(Base):
     description: Mapped[str] = mapped_column(String(255),nullable=True)
 
     project: Mapped["Project"] = relationship("Project", back_populates="columns")
-    tasks: Mapped[list["Task"]] = relationship("Task", back_populates="column", cascade="all, delete-orphan")
+    tasks: Mapped[list["Task"]] = relationship("Task", back_populates="column", cascade="all, delete-orphan", lazy="selectin")
 
 class Task(Base):
     __tablename__ = "tasks"

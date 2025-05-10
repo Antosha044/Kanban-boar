@@ -1,8 +1,11 @@
 from pydantic import BaseModel
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
+
+from src.schemas.task_log import TaskLogOut
+from src.schemas.user import UserOut
 
 class TaskBase(BaseModel):
     name: str
@@ -24,8 +27,7 @@ class TaskOut(TaskBase):
     column_id: UUID
     create_time: datetime
     last_update: datetime
-    users: list = []
-    logs: list = []
-
+    users: List[UserOut] = []  
+    logs: List[TaskLogOut] = []  
     class Config:
         from_attributes = True

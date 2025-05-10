@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 
+from src.schemas.task import TaskOut
 
 class ColumnBase(BaseModel):
     name: str
@@ -20,7 +21,6 @@ class ColumnUpdate(BaseModel):
 class ColumnOut(ColumnBase):
     id: UUID
     project_id: UUID
-    tasks: list = []
-    # или List[TaskOut] при импорте Task схем
+    tasks: List[TaskOut] = []
     class Config:
         from_attributes = True

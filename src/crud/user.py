@@ -72,3 +72,8 @@ async def delete_user(user_id: UUID, session: AsyncSession) -> bool:
     await session.delete(user)
     await session.commit()
     return True
+
+
+async def get_all_users(session: AsyncSession) -> list[User]:
+    result = await session.execute(select(User))
+    return result.scalars().all()

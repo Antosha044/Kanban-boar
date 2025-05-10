@@ -43,7 +43,12 @@ async def get_tasks_by_column(
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return await task_crud.get_tasks_by_column_filtered(session, column_id, name_contains, user_id)
+    return await task_crud.get_tasks_by_column(
+        session, 
+        column_id,
+        name_contains=name_contains,
+        user_id=user_id
+    )
 
 
 @router.put("/{task_id}", response_model=TaskOut)
