@@ -3,13 +3,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
 from src.schemas.project import ProjectCreate, ProjectUpdate, ProjectOut
+from src.schemas.user import UserOut
 from src.models.models import User
 from src.core.database import get_db
 from src.dependencies import get_current_user
 from src.crud import project as project_crud
 
-router = APIRouter(prefix="/projects", tags=["Projects"])
-
+router = APIRouter()
+        
 
 @router.post("/", response_model=ProjectOut)
 async def create_project(
@@ -87,3 +88,13 @@ async def remove_user(
 ):
     await project_crud.remove_user_from_project(session, project_id, user_id)
     return {"detail": "User removed from project"}
+
+
+@router.get("/{project_id}/users", response_model=list[UserOut])
+async def list_project_users(
+    project_id: UUID,
+    session: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    users = await project_crud.get_project_users(session, project_id)
+    return users

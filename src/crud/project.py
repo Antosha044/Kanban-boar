@@ -71,3 +71,12 @@ async def remove_user_from_project(session: AsyncSession, project_id: UUID, user
         )
     )
     await session.commit()
+
+
+async def get_project_users(session: AsyncSession, project_id: UUID) -> list[User]:
+    result = await session.execute(
+        select(User)
+        .join(projects_users)
+        .where(projects_users.c.project_id == project_id)
+    )
+    return result.scalars().all()

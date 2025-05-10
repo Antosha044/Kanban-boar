@@ -11,7 +11,7 @@ class TaskLogCreate(TaskLogBase):
     task_id: UUID
 
 
-class TaskLogRead(TaskLogBase):
+class TaskLogOut(TaskLogBase):
     id: UUID
     task_id: UUID
     create_time: datetime

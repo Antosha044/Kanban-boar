@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models.models import Task, TaskLog, tasks_users
+from src.models.models import Task, TaskLog, tasks_users, User
 from src.schemas.task import TaskCreate, TaskUpdate
 
 from typing import Optional
@@ -122,4 +122,13 @@ async def get_tasks_by_column_filtered(
         query = query.join(tasks_users).where(tasks_users.c.user_id == user_id)
 
     result = await session.execute(query)
+    return result.scalars().all()
+
+
+async def get_users_by_task(session: AsyncSession, task_id: UUID) -> list[User]:
+    result = await session.execute(
+        select(User)
+        .join(tasks_users)
+        .where(tasks_users.c.task_id == task_id)
+    )
     return result.scalars().all()
