@@ -40,6 +40,8 @@ async def get_tasks_by_column(
     column_id: UUID,
     name_contains: Optional[str] = Query(None),
     user_id: Optional[UUID] = Query(None),
+    sort_create_time: Optional[str] = Query(None, regex="^(asc|desc)$"),
+    sort_update_time: Optional[str] = Query(None,regex="^(asc|desc)$"),
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -47,7 +49,9 @@ async def get_tasks_by_column(
         session, 
         column_id,
         name_contains=name_contains,
-        user_id=user_id
+        user_id=user_id,
+        sort_by_create_time=sort_create_time,
+        sort_by_update_time=sort_update_time
     )
 
 

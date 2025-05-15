@@ -10,7 +10,7 @@ from src.models.models import Task, TaskLog, tasks_users, User
 from src.schemas.task import TaskCreate, TaskUpdate
 
 from typing import Optional
-from sqlalchemy import func
+from sqlalchemy import func, asc, desc
 
 async def create_task(session: AsyncSession, task_data: TaskCreate) -> Task:
     new_task = Task(
@@ -60,7 +60,9 @@ async def get_tasks_by_column(
     session: AsyncSession,
     column_id: UUID,
     name_contains: Optional[str] = None,
-    user_id: Optional[UUID] = None
+    user_id: Optional[UUID] = None,
+    sort_by_create_time: Optional[str] = None,  
+    sort_by_update_time: Optional[str] = None  
 ) -> list[Task]:
     query = (
         select(Task)
@@ -77,6 +79,18 @@ async def get_tasks_by_column(
 
     if user_id:
         query = query.join(tasks_users).where(tasks_users.c.user_id == user_id)
+
+    if sort_by_create_time:
+        if sort_by_create_time.lower() == 'desc':
+            query = query.order_by(desc(Task.create_time))
+        else:
+            query = query.order_by(asc(Task.create_time))
+    
+    if sort_by_update_time:
+        if sort_by_update_time.lower() == 'desc':
+            query = query.order_by(desc(Task.last_update))
+        else:
+            query = query.order_by(asc(Task.last_update))
 
     result = await session.execute(query)
     return result.scalars().all()
