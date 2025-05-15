@@ -63,3 +63,4 @@ async def delete_column(
     success = await column_crud.delete_column(session, column_id)
     if not success:
         raise HTTPException(status_code=404, detail="Column not found")
+    return {"detail": "Column deleted successfully"}

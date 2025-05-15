@@ -73,7 +73,7 @@ async def delete_task(
     success = await task_crud.delete_task(session, task_id)
     if not success:
         raise HTTPException(status_code=404, detail="Task not found")
-    return {"ok": True}
+    return {"detail": "Task deleted successfully"}
 
 
 @router.post("/{task_id}/add-user/{user_id}")
@@ -84,7 +84,7 @@ async def add_user_to_task(
     current_user: User = Depends(get_current_user)
 ):
     await task_crud.add_user_to_task(session, task_id, user_id)
-    return {"message": "User added to task"}
+    return {"detail": "User added to task"}
 
 
 @router.delete("/{task_id}/remove-user/{user_id}")
@@ -95,7 +95,7 @@ async def remove_user_from_task(
     current_user: User = Depends(get_current_user)
 ):
     await task_crud.remove_user_from_task(session, task_id, user_id)
-    return {"message": "User removed from task"}
+    return {"detail": "User removed from task"}
 
 
 @router.get("/{task_id}/logs", response_model=List[TaskLogOut])
