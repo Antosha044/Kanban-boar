@@ -50,10 +50,10 @@ async def login_user(
 ):
     user = await get_user_by_email(session, login_data.email)
     if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email")
 
     if not pwd_context.verify(login_data.password, user.password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
 
     access_token = create_access_token(data={"sub": str(user.id)})
     return Token(access_token=access_token)
