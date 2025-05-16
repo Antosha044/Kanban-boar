@@ -4,6 +4,7 @@ from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
+from src.core.jwt_utils import decode_access_token
 from src.settings import settings
 from src.core.database import get_db
 from src.models.models import User
@@ -16,7 +17,7 @@ async def get_current_user(
     session: AsyncSession = Depends(get_db)
 ) -> User:
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        payload = decode_access_token(token)
         user_id: str = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
