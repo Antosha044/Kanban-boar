@@ -36,6 +36,22 @@ services:
       DB_HOST: db
       DB_PORT: ${DB_PORT}
       SECRET_KEY: ${SECRET_KEY}
+  migrations:
+    build: .
+    command: >
+      bash -c "sleep 5 && alembic upgrade head"
+    depends_on:
+      - db
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+    volumes:
+      - ./alembic.ini:/app/alembic.ini
+      - ./migrations:/app/migrations
 
 volumes:
   db_data:
