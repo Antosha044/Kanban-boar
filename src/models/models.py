@@ -1,6 +1,6 @@
 # Здесь модели таблиц из SQLAlchemy
 #from __future__ import annotations
-from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Table
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Table, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from datetime import datetime
@@ -48,6 +48,7 @@ class BoardColumn(Base):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     project_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("projects.id"), nullable=False)
     description: Mapped[str] = mapped_column(String(255),nullable=True)
+    order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     project: Mapped["Project"] = relationship("Project", back_populates="columns")
     tasks: Mapped[list["Task"]] = relationship("Task", back_populates="column", cascade="all, delete-orphan", lazy="selectin")

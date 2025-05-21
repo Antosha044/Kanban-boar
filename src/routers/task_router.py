@@ -80,7 +80,7 @@ async def delete_task(
     return {"detail": "Task deleted successfully"}
 
 
-@router.post("/{task_id}/add-user/{user_id}")
+@router.post("/{task_id}/users/{user_id}")
 async def add_user_to_task(
     task_id: UUID,
     user_id: UUID,
@@ -91,7 +91,7 @@ async def add_user_to_task(
     return {"detail": "User added to task"}
 
 
-@router.delete("/{task_id}/remove-user/{user_id}")
+@router.delete("/{task_id}/users/{user_id}")
 async def remove_user_from_task(
     task_id: UUID,
     user_id: UUID,

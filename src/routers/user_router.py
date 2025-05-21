@@ -38,7 +38,7 @@ async def update_user(
     return updated_user
 
 
-@router.delete("/{user_id}", status_code=204)
+@router.delete("/{user_id}")
 async def delete_user(
     user_id: UUID,
     session: AsyncSession = Depends(get_db),

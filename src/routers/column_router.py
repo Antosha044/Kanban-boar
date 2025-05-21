@@ -54,7 +54,7 @@ async def update_column(
     return updated_column
 
 
-@router.delete("/{column_id}", status_code=204)
+@router.delete("/{column_id}")
 async def delete_column(
     column_id: UUID,
     session: AsyncSession = Depends(get_db),
